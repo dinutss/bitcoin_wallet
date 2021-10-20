@@ -1,9 +1,18 @@
 # Setup:
-1) copy from git
-2) python3 have to be installed on your desctop
-3) go to folder
-4) pip3 install virtualenv
-5) virtualenv venv
-6) source venv/bin/activate
-7) pip3 install -r requirements.txt
-8) python3 api.py
+1) Git and python3 have to be preinstalled on your desktop
+2) Open terminal and run   ```git clone git@github.com:dinutss/bitcoin_wallet.git```
+3) Navigate to ```bitcoin_wallet``` folder in the terminal and run the following commands:
+    - ```pip3 install virtualenv```
+    - ```virtualenv venv```
+    - ```source venv/bin/activate```
+    - ```pip3 install -r requirements.txt```
+    - ```python3 api.py```
+4) Open ```main.html``` file in your browser    
+ 
+# Test instructions
+1) Add several new bitcoin addresses with the help of input field and button ```Add```
+2) Click ```Synchronize data``` button (it can take a few seconds).
+   After that data about all wallets will be loaded to the local db, also balance of each wallet will be updated
+   #### Important: each time you want the data to be updated, press button ```Synchronize data```
+3) Examine wallets transactions by clicking on its identifiers
+4) Use ```Detect transfers``` button detect the likely transfers amongst added wallets
