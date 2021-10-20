@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bitcoin wallet</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script>
+    window.onload = function () {
+        var request = new XMLHttpRequest();
+        request.open("GET", "http://localhost:4000/get_addresses");
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let addresses_and_balances = JSON.parse(this.responseText)['addresses_and_balances']
+                for (let i = 0; i < addresses_and_balances.length; i++) {
+                    let address = addresses_and_balances[i][0]
+                    let balance = addresses_and_balances[i][1] / 1E8
+                    var button = document.createElement("button");
+                    button.className = "tablinks"
+                    button.innerHTML = address + "<br>Balance: " + balance + "<br>(Click to see more)"
+                    button.onclick = function () {
+                        getTransactions(address)
+                    }
+                    document.getElementsByClassName('tab')[0].appendChild(button);
+                }
+            }
+        }
+        request.send();
+    }
+
+    function sync() {
+        let request = new XMLHttpRequest();
+        request.open("GET", "http://localhost:4000/sync");
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                window.location.reload();
+                alert('Data synchronized.')
+            }
+            if (this.readyState === 4 && this.status === 404) {
+                alert('Data not synchronized.')
+            }
+        }
+        request.send();
+    }
+
+    function detectTransfers() {
+        let request = new XMLHttpRequest();
+        request.open("GET", "http://localhost:4000/detect_transfers");
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                document.getElementById("result").innerHTML = "";
+                let transfers = JSON.parse(this.responseText)['transfers']
+                let rows = [['From', 'To']]
+                for (let i = 0; i < transfers.length; i++) {
+                    rows.push([transfers[i][0], transfers[i][1]])
+                }
+                let tbl = document.createElement("table");
+                for (let i = 0; i < rows.length; i++) {
+                    let tr = tbl.insertRow();
+                    for (let j = 0; j < rows[i].length; j++) {
+                        let td = tr.insertCell();
+                        td.appendChild(document.createTextNode(rows[i][j]));
+                    }
+                    document.getElementById("result").appendChild(tbl);
+                }
+            }
+        }
+        request.send();
+    }
+
+    function getTransactions(bitcoinAddress) {
+        let request = new XMLHttpRequest();
+        request.open("GET", "http://localhost:4000/get_transactions/" + bitcoinAddress);
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                document.getElementById("result").innerHTML = "";
+                let transactions = JSON.parse(this.responseText)
+                let rows = [['Hash', 'Time', 'Balance change']]
+                for (let i = 0; i < transactions.length; i++) {
+                    let currentTransaction = [
+                        transactions[i]['hash'],
+                        transactions[i]['time'],
+                        transactions[i]['balance_change'] / 1E8]
+                    rows.push(currentTransaction)
+                }
+                let tbl = document.createElement("table");
+                for (let i = 0; i < rows.length; i++) {
+                    let tr = tbl.insertRow();
+                    for (let j = 0; j < rows[i].length; j++) {
+                        let td = tr.insertCell();
+                        td.appendChild(document.createTextNode(rows[i][j]));
+                    }
+                    document.getElementById("result").appendChild(tbl);
+                }
+            }
+        }
+        request.send();
+    }
+
+    function addBitcoinAddress(bitcoinAddress) {
+        let request = new XMLHttpRequest();
+        request.open("GET", "http://localhost:4000/add_address?address=" + bitcoinAddress);
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let button = document.createElement("button");
+                button.className = "tablinks"
+                button.innerHTML = bitcoinAddress + "<br> Balance 0<br>(Click to see more)"
+                button.onclick = function () {
+                    getTransactions(bitcoinAddress)
+                }
+                document.getElementsByClassName('tab')[0].appendChild(button);
+                alert('Address added.')
+            }
+            if (this.readyState === 4 && this.status === 404) {
+                alert('Address can\'t be added.')
+            }
+        }
+        request.send();
+    }
+
+
+</script>
+<div class="header"></div>
+<div class="tab">
+</div>
+<div id="result"></div>
+<div class="settings">
+    <div class="bitcoinAddress">
+        New Bitcoin Address: <input type="text" id="newBitcoinAddress" value="3E8ociqZa9mZUSwGdSmAEMAoAxBK3FNDcd">
+        <button type="submit" onclick="addBitcoinAddress(document.getElementById('newBitcoinAddress').value)">Add
+        </button>
+    </div>
+    <button type="submit" onclick="detectTransfers()">Detect transfers</button>
+    <button type="submit" onclick="sync()">Synchronize data</button>
+</div>
+
+</body>
+</html>
