@@ -11,7 +11,10 @@ def get_transactions(address):
 
 def sync():
     for address in db_queries.get_addresses():
-        sync_address(address)
+        try:
+            sync_address(address)
+        except:
+            pass
 
 
 def sync_address(address):

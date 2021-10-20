@@ -16,3 +16,12 @@
    #### Important: each time you want the data to be updated, press button ```Synchronize data```
 3) Examine wallets transactions by clicking on its identifiers
 4) Use ```Detect transfers``` button detect the likely transfers amongst added wallets
+
+# Example of addresses
+1BUNd2E5czA5hpZQZNWpbLEWATPvrLWJLS
+
+3E8ociqZa9mZUSwGdSmAEMAoAxBK3FNDcd
+
+bc1qr6lq3yvk6t4v2g2lhneehwntjzqpzmu6g2tptd
+
+37XuVSEpWW4trkfmvWzegTHQt7BdktSKUs

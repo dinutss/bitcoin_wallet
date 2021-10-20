@@ -2,6 +2,11 @@
     box-sizing: border-box
 }
 
+body {
+    font-family: arial, sans-serif;
+    font-size: smaller;
+}
+
 .tab {
     display: inline-block;
     float: left;
@@ -75,30 +80,37 @@ button[type=submit] {
 }
 
 #result {
+    align-items: center;
     display: inline-block;
-    width: 50%;
+    width: 55%;
     padding: 0 12px 20px;
 }
 
+
 table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
+    border: 5px solid black;
     width: 100%;
     table-layout: fixed;
-    column-gap: 40px;
 }
 
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-    overflow: scroll;
+table tr th {
+    background-color: lightgray;
 }
-td {
-  padding: 10px 0;
-}
+
 tr:nth-child(even) {
     background-color: #dddddd;
 }
 
+td, th {
+    text-align: center;
+    overflow: scroll;
+}
 
+td {
+    border: 2px solid white;
+    padding: 10px 0;
+}
+
+button:active{
+  background-color: dimgray;
+}
