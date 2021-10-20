@@ -49,9 +49,10 @@ def get_transactions_for_all_wallets(addresses: set) -> list:
     return transactions
 
 
-def detect_transfers():
-    addresses = db_queries.get_addresses()
-    transactions = get_transactions_for_all_wallets(addresses)
+def detect_transfers(transactions=None):
+    if not transactions:
+        addresses = db_queries.get_addresses()
+        transactions = get_transactions_for_all_wallets(addresses)
 
     d = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: [0, []])))
     for t in transactions:
@@ -64,15 +65,17 @@ def detect_transfers():
         for balance_change, bc_values in list(time_values.items()):
             for wallet_id1, wallet_id_values1 in list(bc_values.items()):
                 opposite_balance_change = -1 * balance_change
+                wallet_hash1 = wallet_id_values1[1][0]['hash']
                 if not d.get(time).get(opposite_balance_change):
                     continue
                 for wallet_id2, wallet_id_values2 in list(d[time][opposite_balance_change].items()):
                     if wallet_id1 == wallet_id2:
                         continue
+                    wallet_hash2 = wallet_id_values2[1][0]['hash']
                     if balance_change > opposite_balance_change:
-                        transfers.append([wallet_id1, wallet_id2])
+                        transfers.append([wallet_hash1, wallet_hash2])
                     else:
-                        transfers.append([wallet_id2, wallet_id1])
+                        transfers.append([wallet_hash2, wallet_hash1])
                     wallet_id_values1[0] -= 1
                     del wallet_id_values1[1][0]
                     if wallet_id_values1[0] == 0:
